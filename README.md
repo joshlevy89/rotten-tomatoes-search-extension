@@ -1,0 +1,1 @@
+This extension searches rotten tomatoes with highlighted text

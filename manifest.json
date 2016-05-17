@@ -1,0 +1,21 @@
+{
+  "manifest_version": 2,
+
+  "name": "Rotten Tomatoes Search",
+  "description": "This extension searches rotten tomatoes with highlighted text",
+  "version": "1.0",
+
+  "browser_action": {
+    "default_icon": "icon.png",
+    "default_popup": "popup.html"
+  },
+  "permissions": [
+      "activeTab",
+      "https://*/*",
+      "http://*/*"
+  ],
+  "content_scripts": [{
+     "js": ["jquery-1.12.3.min.js", "./popup.js"],
+     "matches": ["http://*/*", "https://*/*"]
+   }]
+}
