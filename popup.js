@@ -8,30 +8,42 @@ function getHighlightedText(callback) {
 
  function getSource(theUrl,callback,errorCallback)
 {
-
   // could be made faster by just extracting fields of interest
   // (with yahoo query api for example, or maybe some parameters in ajax call)
   $.ajax({
     url: theUrl,
     type: 'GET',
     success: function(res) {
-        var re = /<span itemprop="ratingValue">\d\d/g;
         var text = res.toString();
-        var matches = text.match(re);
-        // if no matches are made, not on a landing page
-        // ie as far as I know, on a full search page
-        // so, grab the first link and search again
-        if (matches === null) {
-          var re = /<a href="\/m\/([^<]*)\/">/g;  
-          var text = res.toString();
-          var matches = text.match(re);
-          var firstMatch = matches[0];
-          var ext = firstMatch.substring(9,firstMatch.length-2);
-          var nextUrl = 'http://www.rottentomatoes.com' + ext;
-          getSource(nextUrl,callback,errorCallback); // recursive call
+        var re = /<span itemprop="ratingValue">\d\d/g;
+        var ratingValueMatches = text.match(re);
+
+        // if no matches are made, it's because search results have been returned
+        if (ratingValueMatches === null) {
+          var re = /no results found/g;
+          var noResultsFoundMatches = text.match(re);
+          // if search page has 'no results found', return that in callback
+          if (noResultsFoundMatches != null) {
+            callback(noResultsFoundMatches[0]);
+          }
+          // otherwise, check for matches to <span class="tMeterScore">\d\d:
+          else {
+            var re = /<span class="tMeterScore">\d\d/g;
+            var tMeterScoreMatches = text.match(re);
+            //  if matches null (ie links but none rated), return 'no rating yet'
+            if (tMeterScoreMatches === null) {
+              callback('no rating yet');
+            }
+            // if matches not null, return first score match
+            else {
+              var firstMatch = tMeterScoreMatches[0];
+              var rating = firstMatch.substr(firstMatch.length-2);
+              callback(rating);
+            }
+          }
         }
         else {
-        var firstMatch = matches[0];
+        var firstMatch = ratingValueMatches[0];
         var rating = firstMatch.substr(firstMatch.length-2);
         callback(rating);
         }
@@ -51,14 +63,16 @@ function makeSearchString(highlightedText) {
   // replace spaces with underscores in url
   var query = highlightedText.split(' ').join('+');
   return 'http://www.rottentomatoes.com/search/?search=' + query;
-  //return 'http://www.rottentomatoes.com/m/1079908-12_angry_men/';
   //return 'http://www.rottentomatoes.com/search/?search=12+angry+men';
-  //return 'http://www.rottentomatoes.com/m/zootopia/';
 }
 
 document.addEventListener('DOMContentLoaded', function() {
 
   getHighlightedText(function(highlightedText) {
+   if (highlightedText.trim()==="") { 
+      renderStatus('No text selected');
+      return;
+   }
    renderStatus('Searching for: ' + highlightedText + '...');
    getSource(makeSearchString(highlightedText), function(rating) {
       renderStatus('Rating: ' + rating);
