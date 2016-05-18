@@ -39,10 +39,11 @@ function getHighlightedText(callback) {
             + '");',
       'ele.style.top =(r.bottom -relative.top)+"px";',//this will place ele below the selection
       'ele.style.right=-(r.right-relative.right)+"px";',//this will align the right edges together
+      'ele.setAttribute("id","tooltipMenu");',
+      'var menuText = document.createTextNode("HELLO"); ',
+      'ele.appendChild(menuText);',
       'document.body.appendChild(ele);',
-      'alert(ele.style.top)',
       'selection.toString()'
-      //'selection.toString()'
     ].join("\n");
 
   console.log(code);
@@ -108,6 +109,10 @@ function renderStatus(statusText) {
   document.getElementById('status').textContent = statusText;
 }
 
+function renderTooltipMenu() {
+    window.getElementById('tooltipMenu').textContent = "HELLO";
+}
+
 function makeSearchString(highlightedText) {
   // replace spaces with underscores in url
   var query = highlightedText.split(' ').join('+');
@@ -124,6 +129,7 @@ document.addEventListener('DOMContentLoaded', function() {
    }
    renderStatus('Searching for: ' + highlightedText + '...');
    getSource(makeSearchString(highlightedText), function(rating) {
+      //renderTooltipMenu();
       renderStatus('Rating: ' + rating);
    }, function(errorMessage) {
      renderStatus('Cannot find rating: ' + errorMessage);
