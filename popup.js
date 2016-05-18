@@ -1,9 +1,62 @@
 function getHighlightedText(callback) {
-  chrome.tabs.executeScript( {
-    code: "window.getSelection().toString();"
+  chrome.tabs.executeScript({
+    code: "window.getSelection().toString()"
   }, function(selection) {
     callback(selection.toString());
   });
+
+    // var code = [
+    //        'var selection = window.getSelection();',
+    //         'oRange = selection.getRangeAt(0);', //get the text range
+    //         'oRect = oRange.getBoundingClientRect();',
+    //         //'alert(oRect.left);',
+    //         'var d = document.createElement("div");',
+    //         'd.setAttribute("style", "'
+    //             + 'background-color: orange; '
+    //             + 'width: 100px; '
+    //             + 'height: 100px; '
+    //             + 'position: fixed; '
+    //             + 'top: 150px; '
+    //             + 'left: 30px; '
+    //             + 'z-index: 9999; '
+    //             + '");',
+    //         'document.body.appendChild(d);',
+    //         'selection.toString()'
+    //         //'selection.toString()'
+    // ].join("\n");
+
+  //   var code = [
+  //     'var selection = window.getSelection();',
+  //     'var ele = document.createElement("div");',
+  //     'var r = selection.getRangeAt(0).getBoundingClientRect();', //get the text range
+  //     'var relative=document.body.parentNode.getBoundingClientRect();',
+  //     'var topStr = (r.bottom -relative.top)+"px";',
+  //     'alert(topStr);',
+  //     'var rightStr = -(r.right-relative.right)+"px"; ',
+  //     'ele.setAttribute("style", "'
+  //           + 'background-color: orange; '
+  //           + 'width: 100px; '
+  //           + 'height: 100px; '
+  //           + 'position: fixed; '
+  //           + 'top: topStr; '
+  //           + 'right: 300px; '
+  //           + 'z-index: 9999; '
+  //           + '");',
+  //     //'ele.style.top =(r.bottom -relative.top)+"px"';//this will place ele below the selection
+  //     //'ele.style.right=-(r.right-relative.right)+"px"';//this will align the right edges together
+  //     'document.body.appendChild(ele);',
+  //     'selection.toString()'
+  //     //'selection.toString()'
+  //   ].join("\n");
+
+  // console.log(code);
+  // chrome.tabs.executeScript({
+  //   code: code
+  // }, function(selection) {
+  //   console.log(selection)
+  //   callback(selection[0]);
+  // });
+
 }
 
  function getSource(theUrl,callback,errorCallback)
