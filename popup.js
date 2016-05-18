@@ -1,9 +1,9 @@
 function getHighlightedText(callback) {
-  chrome.tabs.executeScript({
-    code: "window.getSelection().toString()"
-  }, function(selection) {
-    callback(selection.toString());
-  });
+  // chrome.tabs.executeScript({
+  //   code: "window.getSelection().toString()"
+  // }, function(selection) {
+  //   callback(selection.toString());
+  // });
 
     // var code = [
     //        'var selection = window.getSelection();',
@@ -35,22 +35,20 @@ function getHighlightedText(callback) {
             + 'width: 100px; '
             + 'height: 100px; '
             + 'position: absolute; '
-            + 'z-index: 9999; '
             + '");',
       'ele.style.top =(r.bottom -relative.top)+"px";',//this will place ele below the selection
       'ele.style.right=-(r.right-relative.right)+"px";',//this will align the right edges together
       'ele.setAttribute("id","tooltipMenu");',
-      'var menuText = document.createTextNode("HELLO"); ',
-      'ele.appendChild(menuText);',
+      //'var menuText = document.createTextNode("HELLO"); ',
+      //'ele.appendChild(menuText);',
       'document.body.appendChild(ele);',
       'selection.toString()'
     ].join("\n");
 
-  console.log(code);
+  //console.log(code);
   chrome.tabs.executeScript({
     code: code
   }, function(selection) {
-    console.log(selection)
     callback(selection[0]);
   });
 
@@ -110,7 +108,19 @@ function renderStatus(statusText) {
 }
 
 function renderTooltipMenu() {
-    window.getElementById('tooltipMenu').textContent = "HELLO";
+    //window.getElementById('tooltipMenu').textContent = "HELLO";
+
+    var code = [
+    'var tooltipMenuDiv = document.getElementById("tooltipMenu");',
+    'var menuText = document.createTextNode("YELLOW"); ',
+    'tooltipMenuDiv.appendChild(menuText);',
+    'document.body.appendChild(tooltipMenuDiv);'
+    ].join("\n");
+
+  //console.log(code);
+  chrome.tabs.executeScript({
+    code: code
+  });
 }
 
 function makeSearchString(highlightedText) {
@@ -129,7 +139,7 @@ document.addEventListener('DOMContentLoaded', function() {
    }
    renderStatus('Searching for: ' + highlightedText + '...');
    getSource(makeSearchString(highlightedText), function(rating) {
-      //renderTooltipMenu();
+      renderTooltipMenu();
       renderStatus('Rating: ' + rating);
    }, function(errorMessage) {
      renderStatus('Cannot find rating: ' + errorMessage);
