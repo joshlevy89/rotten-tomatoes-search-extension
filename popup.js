@@ -107,20 +107,16 @@ function renderStatus(statusText) {
   document.getElementById('status').textContent = statusText;
 }
 
-function renderTooltipMenu() {
-    //window.getElementById('tooltipMenu').textContent = "HELLO";
-
+function renderTooltipMenu(rating) {
     var code = [
+    'var rating = ' + rating + ';',
     'var tooltipMenuDiv = document.getElementById("tooltipMenu");',
-    'var menuText = document.createTextNode("YELLOW"); ',
+    'var menuText = document.createTextNode(rating); ',
     'tooltipMenuDiv.appendChild(menuText);',
     'document.body.appendChild(tooltipMenuDiv);'
     ].join("\n");
 
-  //console.log(code);
-  chrome.tabs.executeScript({
-    code: code
-  });
+  chrome.tabs.executeScript({code: code});
 }
 
 function makeSearchString(highlightedText) {
@@ -139,7 +135,7 @@ document.addEventListener('DOMContentLoaded', function() {
    }
    renderStatus('Searching for: ' + highlightedText + '...');
    getSource(makeSearchString(highlightedText), function(rating) {
-      renderTooltipMenu();
+      renderTooltipMenu(rating);
       renderStatus('Rating: ' + rating);
    }, function(errorMessage) {
      renderStatus('Cannot find rating: ' + errorMessage);
