@@ -30,21 +30,17 @@ function getHighlightedText(callback) {
       'var ele = document.createElement("div");',
       'var r = selection.getRangeAt(0).getBoundingClientRect();', //get the text range
       'var relative=document.body.parentNode.getBoundingClientRect();',
-      'var topStr = (r.bottom -relative.top)+"px";',
-      'alert(topStr);',
-      'var rightStr = -(r.right-relative.right)+"px"; ',
       'ele.setAttribute("style", "'
             + 'background-color: orange; '
             + 'width: 100px; '
             + 'height: 100px; '
-            + 'position: fixed; '
-            + 'top: topStr; '
-            + 'right: 300px; '
+            + 'position: absolute; '
             + 'z-index: 9999; '
             + '");',
-      //'ele.style.top =(r.bottom -relative.top)+"px"';//this will place ele below the selection
-      //'ele.style.right=-(r.right-relative.right)+"px"';//this will align the right edges together
+      'ele.style.top =(r.bottom -relative.top)+"px";',//this will place ele below the selection
+      'ele.style.right=-(r.right-relative.right)+"px";',//this will align the right edges together
       'document.body.appendChild(ele);',
+      'alert(ele.style.top)',
       'selection.toString()'
       //'selection.toString()'
     ].join("\n");
