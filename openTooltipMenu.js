@@ -69,13 +69,8 @@ function createTooltipMenu(selection) {
  });
 }
 
-function renderTooltipMenu(rating) {
-	console.log('automagically called')
-    var rating = rating;
-    var tooltipMenuDiv = document.getElementById("tooltipMenu");
-    var menuText = document.createTextNode(rating); 
-    tooltipMenuDiv.appendChild(menuText);
-    document.body.appendChild(tooltipMenuDiv);
+function renderTooltipMenu(str) {
+    $('#tooltipMenu').text(str);
 }
 
 function makeSearchString(highlightedText) {
@@ -94,15 +89,14 @@ $('body').on('mouseup', function() {
    getHighlightedObject(function(selection) {
    var highlightedText = selection.toString();
    if (highlightedText.trim()==="") { 
-      //renderStatus('No text selected');
       return;
    }
-   console.log('reached here!')
    createTooltipMenu(selection);
+   renderTooltipMenu('searching for: ' + highlightedText);
    getSource(makeSearchString(highlightedText), function(rating) {
-      renderTooltipMenu(rating);
+      renderTooltipMenu('rating is: ' + rating);
    }, function(errorMessage) {
-     //renderStatus('Cannot find rating: ' + errorMessage);
+     renderTooltipMenu('cannot find rating: ' + errorMessage);
    });
   });
 });
