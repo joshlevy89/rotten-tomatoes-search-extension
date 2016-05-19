@@ -9,9 +9,9 @@ function createTooltipMenu(selection) {
       var r = selection.getRangeAt(0).getBoundingClientRect(); //get the text range
       var relative=document.body.parentNode.getBoundingClientRect();
       ele.setAttribute('style',
-              'background-color: orange; '
+              'background-color: lightGray; '
             + 'width: 100px; '
-            + 'height: 100px; '
+            + 'height: 30px; '
             + 'position: absolute; '
             );
       ele.style.top =(r.bottom -relative.top)+"px";//this will place ele below the selection
@@ -92,7 +92,7 @@ $('body').on('mouseup', function() {
       return;
    }
    createTooltipMenu(selection);
-   renderTooltipMenu('searching for: ' + highlightedText);
+   renderTooltipMenu('searching for: ' + highlightedText.substring(0,12)+'...');
    getSource(makeSearchString(highlightedText), function(rating) {
       renderTooltipMenu('rating is: ' + rating);
    }, function(errorMessage) {
