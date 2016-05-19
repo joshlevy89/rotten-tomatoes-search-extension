@@ -1,6 +1,11 @@
-function getHighlightedText(callback) {
+function getHighlightedObject(callback) {
       var selection = window.getSelection();
-      var ele = document.createElement("div");
+      // invoke the callback
+      callback(selection);
+}
+
+function createTooltipMenu(selection) {
+	var ele = document.createElement("div");
       var r = selection.getRangeAt(0).getBoundingClientRect(); //get the text range
       var relative=document.body.parentNode.getBoundingClientRect();
       ele.setAttribute('style',
@@ -13,9 +18,6 @@ function getHighlightedText(callback) {
       ele.style.right=-(r.right-relative.right)+"px"; //this will align the right edges together
       ele.setAttribute("id","tooltipMenu");
       document.body.appendChild(ele);
-
-      // invoke the callback
-      callback(selection.toString());
 }
 
  function getSource(theUrl,callback,errorCallback)
@@ -82,12 +84,18 @@ function makeSearchString(highlightedText) {
   //return 'http://www.rottentomatoes.com/search/?search=12+angry+men';
 }
 
-$('body').on('click', '*', function(event) {
-    getHighlightedText(function(highlightedText) {
+$('body').on('mousedown','*', function(){
+
+});
+
+$('body').on('mouseup', '*', function() {
+   getHighlightedObject(function(selection) {
+   var highlightedText = selection.toString();
    if (highlightedText.trim()==="") { 
       renderStatus('No text selected');
       return;
    }
+   createTooltipMenu(selection);
    getSource(makeSearchString(highlightedText), function(rating) {
       renderTooltipMenu(rating);
    }, function(errorMessage) {
