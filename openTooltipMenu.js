@@ -10,8 +10,8 @@ function createTooltipMenu(selection) {
       var relative=document.body.parentNode.getBoundingClientRect();
       ele.setAttribute('style',
               'background-color: lightGray; '
-            + 'width: 100px; '
-            + 'height: 30px; '
+           // + 'width: 100px; '
+           // + 'height: 30px; '
             + 'position: absolute; '
             );
       ele.style.top =(r.bottom -relative.top)+"px";//this will place ele below the selection
@@ -29,37 +29,26 @@ function createTooltipMenu(selection) {
     type: 'GET',
     success: function(res) {
         var text = res.toString();
-        var re = /<span itemprop="ratingValue">\d\d/g;
-        var ratingValueMatches = text.match(re);
+        var ratingValue = getMatchToRegExp(text,'RATING_VALUE','');
 
-        // if no matches are made, it's because search results have been returned
-        if (ratingValueMatches === null) {
-          var re = /no results found/g;
-          var noResultsFoundMatches = text.match(re);
+        // if no matches are made, it's because search results page has been returned
+        if (ratingValue === undefined) {
           // if search page has 'no results found', return that in callback
-          if (noResultsFoundMatches != null) {
-            callback(noResultsFoundMatches[0]);
-          }
+          var noResultsFound = getMatchToRegExp(text,'NO_RESULTS_FOUND','');
+          if (noResultsFound != undefined) callback(noResultsFound);
           // otherwise, check for matches to <span class="tMeterScore">\d\d:
           else {
-            var re = /<span class="tMeterScore">\d\d/g;
-            var tMeterScoreMatches = text.match(re);
+            var tMeterScore = getMatchToRegExp(text,'T_METER_SCORE','');
             //  if matches null (ie links but none rated), return 'no rating yet'
-            if (tMeterScoreMatches === null) {
-              callback('no rating yet');
-            }
+            if (tMeterScore === undefined) callback('no rating yet');
             // if matches not null, return first score match
-            else {
-              var firstMatch = tMeterScoreMatches[0];
-              var rating = firstMatch.substr(firstMatch.length-2);
-              callback(rating);
-            }
+            else callback(tMeterScore);
           }
         }
         else {
-        var firstMatch = ratingValueMatches[0];
-        var rating = firstMatch.substr(firstMatch.length-2);
-        callback(rating);
+        // get the url for the movie
+        var match = getMatchToRegExp(text,'MOVIE_URL','');
+        callback(ratingValue);
         }
     },
     error: function(res) {
@@ -67,6 +56,33 @@ function createTooltipMenu(selection) {
     }
 
  });
+}
+
+// gets the match to the regular expression specified by type
+// if type is empty, use optionalRe instead
+function getMatchToRegExp(text,type,optionalRe) {
+  var re;
+  switch (type) {
+    case 'MOVIE_URL':
+      re = /<link href="(http:\/\/www.*)" rel="canonical"/;
+      break;
+    case 'NO_RESULTS_FOUND':
+      re = /(no results found)/;
+      break;
+    case 'RATING_VALUE':
+      re = /<span itemprop="ratingValue">(\d*)/g;
+      break;
+    case 'T_METER_SCORE':
+      re = /<span class="tMeterScore">(\d*)/g;
+      break;
+    default:
+      re = optionalRe;
+  }
+  var match = re.exec(text);
+  //console.log(re);
+  //console.log(match[1]);
+  if (match === null) return undefined
+  return match[1];
 }
 
 function renderTooltipMenu(str) {
