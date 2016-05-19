@@ -47,14 +47,13 @@ function createTooltipMenu(selection) {
         }
         else {
         // get the url for the movie
-        var match = getMatchToRegExp(text,'MOVIE_URL','');
-        callback(ratingValue);
+        var movieUrl = getMatchToRegExp(text,'MOVIE_URL','');
+        callback(ratingValue,movieUrl);
         }
     },
     error: function(res) {
       callback(res.statusText)
     }
-
  });
 }
 
@@ -109,8 +108,8 @@ $('body').on('mouseup', function() {
    }
    createTooltipMenu(selection);
    renderTooltipMenu('searching for: ' + highlightedText.substring(0,12)+'...');
-   getSource(makeSearchString(highlightedText), function(rating) {
-      renderTooltipMenu('rating is: ' + rating);
+   getSource(makeSearchString(highlightedText), function(rating,movieUrl) {
+      renderTooltipMenu('rating is: ' + rating + ' ' + movieUrl);
    }, function(errorMessage) {
      renderTooltipMenu('cannot find rating: ' + errorMessage);
    });
