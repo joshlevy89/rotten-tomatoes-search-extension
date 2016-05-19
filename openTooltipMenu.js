@@ -70,6 +70,7 @@ function createTooltipMenu(selection) {
 }
 
 function renderTooltipMenu(rating) {
+	console.log('automagically called')
     var rating = rating;
     var tooltipMenuDiv = document.getElementById("tooltipMenu");
     var menuText = document.createTextNode(rating); 
@@ -84,22 +85,24 @@ function makeSearchString(highlightedText) {
   //return 'http://www.rottentomatoes.com/search/?search=12+angry+men';
 }
 
-$('body').on('mousedown','*', function(){
-
+// destroy any existing tooltipMenuDivs
+$('body').on('mousedown', function(){
+	 $( "#tooltipMenu" ).remove();
 });
 
-$('body').on('mouseup', '*', function() {
+$('body').on('mouseup', function() {
    getHighlightedObject(function(selection) {
    var highlightedText = selection.toString();
    if (highlightedText.trim()==="") { 
-      renderStatus('No text selected');
+      //renderStatus('No text selected');
       return;
    }
+   console.log('reached here!')
    createTooltipMenu(selection);
    getSource(makeSearchString(highlightedText), function(rating) {
       renderTooltipMenu(rating);
    }, function(errorMessage) {
-     renderStatus('Cannot find rating: ' + errorMessage);
+     //renderStatus('Cannot find rating: ' + errorMessage);
    });
   });
 });
