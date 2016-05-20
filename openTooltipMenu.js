@@ -89,19 +89,22 @@ function getMatchToRegExp(text,type,optionalRe) {
     default:
       re = optionalRe;
   }
-  console.log(re);
+  //console.log(re);
   var match = re.exec(text);
-  console.log(match);
+  //console.log(match);
   if (match === null) return undefined
   return match[1];
 }
 
 function renderTooltipMenuText(str) {
+    $("#tooltipMenu").empty(); // removes any previous divs 
     //$('#tooltipMenu').text(str);
     $('#tooltipMenu').append('<div>' + str + '</div>');
+    $('#tooltipMenu').css('padding','5px');
 }
 
 function renderTooltipMenuLink(movieUrl) {
+    if (movieUrl === undefined) return
     $('#tooltipMenu').append('<a href=' + movieUrl + ' target=_blank>Link</a>');
 }
 
@@ -134,12 +137,12 @@ $('body').on('mouseup', function(event) {
       return;
    }
    createTooltipMenu(selection);
-   renderTooltipMenuText('searching for: ' + highlightedText.substring(0,12)+'...');
+   renderTooltipMenuText('Searching for ' + highlightedText.substring(0,12)+'...');
    getSource(makeSearchString(highlightedText), function(rating,movieUrl) {
-      renderTooltipMenuText('rating is: ' + rating);
+      renderTooltipMenuText('Rating: ' + rating + '%');
       renderTooltipMenuLink(movieUrl);
    }, function(errorMessage) {
-     renderTooltipMenuText('cannot find rating: ' + errorMessage);
+     renderTooltipMenuText('Cannot find rating: ' + errorMessage);
    });
   });
   }
