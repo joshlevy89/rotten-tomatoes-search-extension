@@ -39,18 +39,22 @@ function createTooltipMenu(selection) {
             // get the index of the t meter score in the links so that  
             var ratingValue = getMatchToRegExp(firstLinkText,'T_METER_SCORE','');
             if (ratingValue === undefined) ratingValue = 'no rating yet'; // check whether movie page has no ratingValue
-            var movieUrl = makeResultString(getMatchToRegExp(text,'MOVIE_URL_SEARCH_PAGE',''));
-            callback(ratingValue,movieUrl);
+            var movieUrl = makeResultString(getMatchToRegExp(firstLinkText,'MOVIE_URL_SEARCH_PAGE',''));
+            var title = getMatchToRegExp(firstLinkText,'TITLE_SEARCH_PAGE','');
+            var year = getMatchToRegExp(firstLinkText,'YEAR_SEARCH_PAGE','');
+            var dispTitle = title + ' (' + year + ')';
+            callback(ratingValue,movieUrl,dispTitle);
           }
         }
         // if is a movie result page...
         else {
-        // get the url and rating for the movie
-        var ratingValue = getMatchToRegExp(text,'RATING_VALUE','');
-        if (ratingValue === undefined) ratingValue = 'no rating yet'; // check whether movie page has no ratingValue
-        var movieUrl = getMatchToRegExp(text,'MOVIE_URL_RESULT_PAGE','');
-        var title = getMatchToRegExp(text,'TITLE_RESULT_PAGE','');
-        callback(ratingValue,movieUrl,title);
+          // get the url and rating for the movie
+          var ratingValue = getMatchToRegExp(text,'RATING_VALUE','');
+          if (ratingValue === undefined) ratingValue = 'no rating yet'; // check whether movie page has no ratingValue
+          var movieUrl = getMatchToRegExp(text,'MOVIE_URL_RESULT_PAGE','');
+          var titleAndYear = getMatchToRegExp(text,'TITLE_AND_YEAR_RESULT_PAGE','');
+          var dispTitle = titleAndYear.replace('&nbsp;',' ');
+          callback(ratingValue,movieUrl,dispTitle);
         }
     },
     error: function(res) {
@@ -95,15 +99,22 @@ function getMatchToRegExp(text,type,optionalRe) {
       re = /<link href="(http:\/\/www.*)" rel="canonical"/;
       break;
     case 'MOVIE_URL_SEARCH_PAGE':
-      re = /<span class="movieposter"> <a href="(([^<])*)">/;
+      re = /href="([^<]*)">[^<]*<\/a> <span class="movie_year"> \(\d*\)/;
       break;
-    case 'TITLE_RESULT_PAGE':
+    case 'TITLE_AND_YEAR_RESULT_PAGE':
       re = /<title>(.*) - Rotten Tomatoes<\/title>/;
+      break;
+    case 'TITLE_SEARCH_PAGE':
+      re = /href="[^<]*">([^<]*)<\/a> <span class="movie_year"> \(\d*\)/;
+      break;
+    case 'YEAR_SEARCH_PAGE':
+      re = /href="[^<]*">[^<]*<\/a> <span class="movie_year"> \((\d*)\)/;
       break;
     default:
       re = optionalRe;
   }
   //console.log(re);
+  //console.log(text);
   var match = re.exec(text);
   //console.log(match);
   if (match === null) return undefined
