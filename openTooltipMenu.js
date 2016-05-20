@@ -51,7 +51,8 @@ function createTooltipMenu(selection) {
         var ratingValue = getMatchToRegExp(text,'RATING_VALUE','');
         if (ratingValue === undefined) ratingValue = 'no rating yet'; // check whether movie page has no ratingValue
         var movieUrl = getMatchToRegExp(text,'MOVIE_URL_RESULT_PAGE','');
-        callback(ratingValue,movieUrl);
+        var title = getMatchToRegExp(text,'TITLE_RESULT_PAGE','');
+        callback(ratingValue,movieUrl,title);
         }
     },
     error: function(res) {
@@ -76,6 +77,9 @@ function getMatchToRegExp(text,type,optionalRe) {
       break;
     case 'MOVIE_URL_NO_RATING':
       re = /No Score Yet[^=]* <span class="movieposter"> <a href="(([^<])*)">/;
+      break;
+    case 'TITLE_RESULT_PAGE':
+      re = /<title>(.*) - Rotten Tomatoes<\/title>/;
       break;
     case 'NO_RESULTS_FOUND':
       re = /(no results found)/;
@@ -103,9 +107,16 @@ function renderTooltipMenuText(str) {
     $('#tooltipMenu').css('padding','5px');
 }
 
-function renderTooltipMenuLink(movieUrl) {
+function renderTooltipMenuLink(movieUrl,title) {
     if (movieUrl === undefined) return
-    $('#tooltipMenu').append('<a href=' + movieUrl + ' target=_blank>Link</a>');
+    // if cannot find title, render link with 'Link' string instead
+    if (title === undefined) {
+      $('#tooltipMenu').append('<a href=' + movieUrl + ' target=_blank>Link</a>');
+    }
+    else {
+      var dispTitle = title.replace('&nbsp;',' ');
+      $('#tooltipMenu').append('<a href=' + movieUrl + ' target=_blank>' + dispTitle + '</a>');
+    }
 }
 
 function makeSearchString(highlightedText) {
@@ -138,7 +149,7 @@ $('body').on('mouseup', function(event) {
    }
    createTooltipMenu(selection);
    renderTooltipMenuText('Searching for ' + highlightedText.substring(0,12)+'...');
-   getSource(makeSearchString(highlightedText), function(rating,movieUrl) {
+   getSource(makeSearchString(highlightedText), function(rating,movieUrl,title) {
       if (rating === 'no results found') {
         renderTooltipMenuText(rating);
       }
@@ -148,7 +159,7 @@ $('body').on('mouseup', function(event) {
       }
       else {
         renderTooltipMenuText('Rating: ' + rating + '%');
-        renderTooltipMenuLink(movieUrl);
+        renderTooltipMenuLink(movieUrl,title);
       }
    }, function(errorMessage) {
      renderTooltipMenuText('Cannot find rating: ' + errorMessage);
