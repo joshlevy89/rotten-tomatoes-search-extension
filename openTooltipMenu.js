@@ -27,25 +27,23 @@ function createTooltipMenu(selection) {
         var text = res.toString();
         // check whether the page is a search results page (or movie page)
         var searchPage = getMatchToRegExp(text,'SEARCH_PAGE','');
+        // if is a search result page...
         if (searchPage !== undefined) {
           // if search page has 'no results found', return that in callback
           var noResultsFound = getMatchToRegExp(text,'NO_RESULTS_FOUND','');
           if (noResultsFound != undefined) callback(noResultsFound,undefined);
-          // otherwise, check for matches to <span class="tMeterScore">\d\d:
+          // otherwise, get the text between first <li ...>...</li> after movie list start
           else {
-            var tMeterScore = getMatchToRegExp(text,'T_METER_SCORE','');
-            //  if matches null (ie links but none rated), return 'no rating yet'
-            if (tMeterScore === undefined) {
-              var movieUrl = makeResultString(getMatchToRegExp(text,'MOVIE_URL_NO_RATING',''));
-              callback('no rating yet',movieUrl);
-            }
-            // if matches not null, return first score match
-            else {
-              var movieUrl = makeResultString(getMatchToRegExp(text,'MOVIE_URL_SEARCH_PAGE',''));
-              callback(tMeterScore,movieUrl);
-            }
+            // get the first link text
+            var firstLinkText = getFirstLinkText(text);
+            // get the index of the t meter score in the links so that  
+            var ratingValue = getMatchToRegExp(firstLinkText,'T_METER_SCORE','');
+            if (ratingValue === undefined) ratingValue = 'no rating yet'; // check whether movie page has no ratingValue
+            var movieUrl = makeResultString(getMatchToRegExp(text,'MOVIE_URL_SEARCH_PAGE',''));
+            callback(ratingValue,movieUrl);
           }
         }
+        // if is a movie result page...
         else {
         // get the url and rating for the movie
         var ratingValue = getMatchToRegExp(text,'RATING_VALUE','');
@@ -61,6 +59,21 @@ function createTooltipMenu(selection) {
  });
 }
 
+// get the html text associated with the first link
+function getFirstLinkText(text) {
+  // find index where movies list starts
+  var movieListStartIndex = text.indexOf('<h2 class="bottom_divider">Movies</h2>');
+  // get all text after that
+  var textAfterMovieListStart = text.substring(movieListStartIndex);
+  // get indices of text between first <li ...>...</li> after movie list start
+  var firstLiOpenAfterListStart = textAfterMovieListStart.indexOf('<li');
+  var firstLiCloseAfterListStart = textAfterMovieListStart.indexOf('</li>');
+  var startTextInd = movieListStartIndex + firstLiOpenAfterListStart;
+  var endTextInd = movieListStartIndex + firstLiCloseAfterListStart;
+  var firstLinkText = text.substring(startTextInd,endTextInd);
+  return firstLinkText;
+}
+
 // gets the match to the regular expression specified by type
 // if type is empty, use optionalRe instead
 function getMatchToRegExp(text,type,optionalRe) {
@@ -68,18 +81,6 @@ function getMatchToRegExp(text,type,optionalRe) {
   switch (type) {
     case 'SEARCH_PAGE':
       re = /(Search Results - Rotten Tomatoes)/;
-      break;
-    case 'MOVIE_URL_RESULT_PAGE':
-      re = /<link href="(http:\/\/www.*)" rel="canonical"/;
-      break;
-    case 'MOVIE_URL_SEARCH_PAGE':
-      re = /<span class="tMeterScore">[^=]* <span class="movieposter"> <a href="(([^<])*)">/;
-      break;
-    case 'MOVIE_URL_NO_RATING':
-      re = /No Score Yet[^=]* <span class="movieposter"> <a href="(([^<])*)">/;
-      break;
-    case 'TITLE_RESULT_PAGE':
-      re = /<title>(.*) - Rotten Tomatoes<\/title>/;
       break;
     case 'NO_RESULTS_FOUND':
       re = /(no results found)/;
@@ -89,6 +90,15 @@ function getMatchToRegExp(text,type,optionalRe) {
       break;
     case 'T_METER_SCORE':
       re = /<span class="tMeterScore">(\d*)/g;
+      break;
+    case 'MOVIE_URL_RESULT_PAGE':
+      re = /<link href="(http:\/\/www.*)" rel="canonical"/;
+      break;
+    case 'MOVIE_URL_SEARCH_PAGE':
+      re = /<span class="movieposter"> <a href="(([^<])*)">/;
+      break;
+    case 'TITLE_RESULT_PAGE':
+      re = /<title>(.*) - Rotten Tomatoes<\/title>/;
       break;
     default:
       re = optionalRe;
