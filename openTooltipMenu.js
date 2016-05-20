@@ -84,8 +84,13 @@ function getMatchToRegExp(text,type,optionalRe) {
   return match[1];
 }
 
-function renderTooltipMenu(str) {
-    $('#tooltipMenu').text(str);
+function renderTooltipMenuText(str) {
+    //$('#tooltipMenu').text(str);
+    $('#tooltipMenu').append('<div>' + str + '</div>');
+}
+
+function renderTooltipMenuLink(movieUrl) {
+    $('#tooltipMenu').append('<a href=' + movieUrl + ' target=_blank>Link</a>');
 }
 
 function makeSearchString(highlightedText) {
@@ -95,24 +100,32 @@ function makeSearchString(highlightedText) {
   //return 'http://www.rottentomatoes.com/search/?search=12+angry+men';
 }
 
+
 // destroy any existing tooltipMenuDivs
-$('body').on('mousedown', function(){
-	 $( "#tooltipMenu" ).remove();
+$('body').on('mousedown', function(event) {
+  // check if event originated from outside tooltipMenu
+  if (!$(event.target).closest('#tooltipMenu').length) {
+      $( "#tooltipMenu" ).remove();
+  }
 });
 
-$('body').on('mouseup', function() {
+$('body').on('mouseup', function(event) {
+  // if event originated from outside tooltipMenu, run search
+   if (!$(event.target).closest('#tooltipMenu').length) {
    getHighlightedObject(function(selection) {
    var highlightedText = selection.toString();
    if (highlightedText.trim()==="") { 
       return;
    }
    createTooltipMenu(selection);
-   renderTooltipMenu('searching for: ' + highlightedText.substring(0,12)+'...');
+   renderTooltipMenuText('searching for: ' + highlightedText.substring(0,12)+'...');
    getSource(makeSearchString(highlightedText), function(rating,movieUrl) {
-      renderTooltipMenu('rating is: ' + rating + ' ' + movieUrl);
+      renderTooltipMenuText('rating is: ' + rating);
+      renderTooltipMenuLink(movieUrl);
    }, function(errorMessage) {
-     renderTooltipMenu('cannot find rating: ' + errorMessage);
+     renderTooltipMenuText('cannot find rating: ' + errorMessage);
    });
   });
+  }
 });
 
