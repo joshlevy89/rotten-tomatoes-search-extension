@@ -35,24 +35,27 @@ function createTooltipMenu(selection) {
         if (ratingValue === undefined) {
           // if search page has 'no results found', return that in callback
           var noResultsFound = getMatchToRegExp(text,'NO_RESULTS_FOUND','');
-          if (noResultsFound != undefined) callback(noResultsFound);
+          if (noResultsFound != undefined) callback(noResultsFound,undefined);
           // otherwise, check for matches to <span class="tMeterScore">\d\d:
           else {
             var tMeterScore = getMatchToRegExp(text,'T_METER_SCORE','');
             //  if matches null (ie links but none rated), return 'no rating yet'
-            if (tMeterScore === undefined) callback('no rating yet');
+            if (tMeterScore === undefined) callback('no rating yet',undefined);
             // if matches not null, return first score match
-            else callback(tMeterScore);
+            else {
+              var movieUrl = makeResultString(getMatchToRegExp(text,'MOVIE_URL_SEARCH_PAGE',''));
+              callback(tMeterScore,movieUrl);
+            }
           }
         }
         else {
         // get the url for the movie
-        var movieUrl = getMatchToRegExp(text,'MOVIE_URL','');
+        var movieUrl = getMatchToRegExp(text,'MOVIE_URL_RESULT_PAGE','');
         callback(ratingValue,movieUrl);
         }
     },
     error: function(res) {
-      callback(res.statusText)
+      callback(res.statusText,undefined)
     }
  });
 }
@@ -62,8 +65,11 @@ function createTooltipMenu(selection) {
 function getMatchToRegExp(text,type,optionalRe) {
   var re;
   switch (type) {
-    case 'MOVIE_URL':
+    case 'MOVIE_URL_RESULT_PAGE':
       re = /<link href="(http:\/\/www.*)" rel="canonical"/;
+      break;
+    case 'MOVIE_URL_SEARCH_PAGE':
+      re = /<span class="tMeterScore">[^=]* <span class="movieposter"> <a href="(([^<])*)">/;
       break;
     case 'NO_RESULTS_FOUND':
       re = /(no results found)/;
@@ -77,9 +83,9 @@ function getMatchToRegExp(text,type,optionalRe) {
     default:
       re = optionalRe;
   }
-  var match = re.exec(text);
   //console.log(re);
-  //console.log(match[1]);
+  var match = re.exec(text);
+  //console.log(match);
   if (match === null) return undefined
   return match[1];
 }
@@ -98,6 +104,10 @@ function makeSearchString(highlightedText) {
   var query = highlightedText.split(' ').join('+');
   return 'https://www.rottentomatoes.com/search/?search=' + query;
   //return 'http://www.rottentomatoes.com/search/?search=12+angry+men';
+}
+
+function makeResultString(ext) {
+  return 'https://www.rottentomatoes.com' + ext;
 }
 
 
