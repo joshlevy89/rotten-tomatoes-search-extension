@@ -25,10 +25,9 @@ function createTooltipMenu(selection) {
     type: 'GET',
     success: function(res) {
         var text = res.toString();
-        var ratingValue = getMatchToRegExp(text,'RATING_VALUE','');
-        //<title>Search Results - Rotten Tomatoes</title>
-        // if no matches are made, it's because search results page has been returned
-        if (ratingValue === undefined) {
+        // check whether the page is a search results page (or movie page)
+        var searchPage = getMatchToRegExp(text,'SEARCH_PAGE','');
+        if (searchPage !== undefined) {
           // if search page has 'no results found', return that in callback
           var noResultsFound = getMatchToRegExp(text,'NO_RESULTS_FOUND','');
           if (noResultsFound != undefined) callback(noResultsFound,undefined);
@@ -47,8 +46,10 @@ function createTooltipMenu(selection) {
             }
           }
         }
-        else {f
-        // get the url for the movie
+        else {
+        // get the url and rating for the movie
+        var ratingValue = getMatchToRegExp(text,'RATING_VALUE','');
+        if (ratingValue === undefined) ratingValue = 'no rating yet'; // check whether movie page has no ratingValue
         var movieUrl = getMatchToRegExp(text,'MOVIE_URL_RESULT_PAGE','');
         callback(ratingValue,movieUrl);
         }
@@ -64,6 +65,9 @@ function createTooltipMenu(selection) {
 function getMatchToRegExp(text,type,optionalRe) {
   var re;
   switch (type) {
+    case 'SEARCH_PAGE':
+      re = /(Search Results - Rotten Tomatoes)/;
+      break;
     case 'MOVIE_URL_RESULT_PAGE':
       re = /<link href="(http:\/\/www.*)" rel="canonical"/;
       break;
@@ -101,7 +105,6 @@ function renderTooltipMenuText(str) {
 
 function renderTooltipMenuLink(movieUrl) {
     if (movieUrl === undefined) return
-    console.log('movieUrl is ' + movieUrl);
     $('#tooltipMenu').append('<a href=' + movieUrl + ' target=_blank>Link</a>');
 }
 
