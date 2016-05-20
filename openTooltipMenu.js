@@ -8,10 +8,6 @@ function createTooltipMenu(selection) {
 	var ele = document.createElement("div");
       var r = selection.getRangeAt(0).getBoundingClientRect(); //get the text range
       var relative=document.body.parentNode.getBoundingClientRect();
-      // ele.setAttribute('style',
-      //         'background-color: Silver; '
-      //       + 'position: absolute; '
-      //       );
       ele.style.position = 'absolute';
       ele.style.backgroundColor= '#f8eded';
       ele.style.top =(r.bottom -relative.top)+"px";//this will place ele below the selection
@@ -30,7 +26,7 @@ function createTooltipMenu(selection) {
     success: function(res) {
         var text = res.toString();
         var ratingValue = getMatchToRegExp(text,'RATING_VALUE','');
-
+        //<title>Search Results - Rotten Tomatoes</title>
         // if no matches are made, it's because search results page has been returned
         if (ratingValue === undefined) {
           // if search page has 'no results found', return that in callback
@@ -51,7 +47,7 @@ function createTooltipMenu(selection) {
             }
           }
         }
-        else {
+        else {f
         // get the url for the movie
         var movieUrl = getMatchToRegExp(text,'MOVIE_URL_RESULT_PAGE','');
         callback(ratingValue,movieUrl);
@@ -105,6 +101,7 @@ function renderTooltipMenuText(str) {
 
 function renderTooltipMenuLink(movieUrl) {
     if (movieUrl === undefined) return
+    console.log('movieUrl is ' + movieUrl);
     $('#tooltipMenu').append('<a href=' + movieUrl + ' target=_blank>Link</a>');
 }
 
@@ -139,8 +136,17 @@ $('body').on('mouseup', function(event) {
    createTooltipMenu(selection);
    renderTooltipMenuText('Searching for ' + highlightedText.substring(0,12)+'...');
    getSource(makeSearchString(highlightedText), function(rating,movieUrl) {
-      renderTooltipMenuText('Rating: ' + rating + '%');
-      renderTooltipMenuLink(movieUrl);
+      if (rating === 'no results found') {
+        renderTooltipMenuText(rating);
+      }
+      else if (rating === 'no rating yet') {
+        renderTooltipMenuText(rating);
+        renderTooltipMenuLink(movieUrl);
+      }
+      else {
+        renderTooltipMenuText('Rating: ' + rating + '%');
+        renderTooltipMenuLink(movieUrl);
+      }
    }, function(errorMessage) {
      renderTooltipMenuText('Cannot find rating: ' + errorMessage);
    });
