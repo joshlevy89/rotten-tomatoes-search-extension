@@ -31,7 +31,7 @@ function createTooltipMenu(selection) {
         if (searchPage !== undefined) {
           // if search page has 'no results found', return that in callback
           var noResultsFound = getMatchToRegExp(text,'NO_RESULTS_FOUND','');
-          if (noResultsFound != undefined) callback(noResultsFound,undefined);
+          if (noResultsFound != undefined) callback(noResultsFound);
           // otherwise, get the text between first <li ...>...</li> after movie list start
           else {
             // get the first link text
@@ -58,7 +58,7 @@ function createTooltipMenu(selection) {
         }
     },
     error: function(res) {
-      callback(res.statusText,undefined)
+      callback(res.statusText)
     }
  });
 }
@@ -114,30 +114,31 @@ function getMatchToRegExp(text,type,optionalRe) {
       re = optionalRe;
   }
   //console.log(re);
-  //console.log(text);
   var match = re.exec(text);
   //console.log(match);
   if (match === null) return undefined
   return match[1];
 }
 
-function renderTooltipMenuText(str) {
-    $("#tooltipMenu").empty(); // removes any previous divs 
-    //$('#tooltipMenu').text(str);
+function renderTooltipMenuSearchText(str) {
     $('#tooltipMenu').append('<div>' + str + '</div>');
     $('#tooltipMenu').css('padding','5px');
 }
 
-function renderTooltipMenuLink(movieUrl,title) {
+function renderTooltipMenuRatingText(str) {
+    $("#tooltipMenu").empty(); // removes any previous divs 
+    if (str.length<=2) {
+      str = 'Rating: ' + str + '%';
+    }
+    $('#tooltipMenu').append('<div>' + str + '</div>');
+    $('#tooltipMenu').css('padding','5px');
+}
+
+function renderTooltipMenuLink(movieUrl,dispTitle) {
     if (movieUrl === undefined) return
-    // if cannot find title, render link with 'Link' string instead
-    if (title === undefined) {
-      $('#tooltipMenu').append('<a href=' + movieUrl + ' target=_blank>Link</a>');
-    }
-    else {
-      var dispTitle = title.replace('&nbsp;',' ');
-      $('#tooltipMenu').append('<a href=' + movieUrl + ' target=_blank>' + dispTitle + '</a>');
-    }
+    var str = dispTitle;
+    if (str === undefined) str = 'Link';// if cannot find title, render 'Link'
+    $('#tooltipMenu').append('<a href=' + movieUrl + ' target=_blank>' + str + '</a>');
 }
 
 function makeSearchString(highlightedText) {
@@ -169,19 +170,10 @@ $('body').on('mouseup', function(event) {
       return;
    }
    createTooltipMenu(selection);
-   renderTooltipMenuText('Searching for ' + highlightedText.substring(0,12)+'...');
-   getSource(makeSearchString(highlightedText), function(rating,movieUrl,title) {
-      if (rating === 'no results found') {
-        renderTooltipMenuText(rating);
-      }
-      else if (rating === 'no rating yet') {
-        renderTooltipMenuText(rating);
-        renderTooltipMenuLink(movieUrl);
-      }
-      else {
-        renderTooltipMenuText('Rating: ' + rating + '%');
-        renderTooltipMenuLink(movieUrl,title);
-      }
+   renderTooltipMenuSearchText('Searching for ' + highlightedText.substring(0,12)+'...');
+   getSource(makeSearchString(highlightedText), function(rating,movieUrl,dispTitle) {
+      renderTooltipMenuRatingText(rating);
+      renderTooltipMenuLink(movieUrl,dispTitle);
    }, function(errorMessage) {
      renderTooltipMenuText('Cannot find rating: ' + errorMessage);
    });
