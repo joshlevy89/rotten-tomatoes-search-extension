@@ -40,7 +40,10 @@ function createTooltipMenu(selection) {
           else {
             var tMeterScore = getMatchToRegExp(text,'T_METER_SCORE','');
             //  if matches null (ie links but none rated), return 'no rating yet'
-            if (tMeterScore === undefined) callback('no rating yet',undefined);
+            if (tMeterScore === undefined) {
+              var movieUrl = makeResultString(getMatchToRegExp(text,'MOVIE_URL_NO_RATING',''));
+              callback('no rating yet',movieUrl);
+            }
             // if matches not null, return first score match
             else {
               var movieUrl = makeResultString(getMatchToRegExp(text,'MOVIE_URL_SEARCH_PAGE',''));
@@ -71,6 +74,9 @@ function getMatchToRegExp(text,type,optionalRe) {
     case 'MOVIE_URL_SEARCH_PAGE':
       re = /<span class="tMeterScore">[^=]* <span class="movieposter"> <a href="(([^<])*)">/;
       break;
+    case 'MOVIE_URL_NO_RATING':
+      re = /No Score Yet[^=]* <span class="movieposter"> <a href="(([^<])*)">/;
+      break;
     case 'NO_RESULTS_FOUND':
       re = /(no results found)/;
       break;
@@ -83,9 +89,9 @@ function getMatchToRegExp(text,type,optionalRe) {
     default:
       re = optionalRe;
   }
-  //console.log(re);
+  console.log(re);
   var match = re.exec(text);
-  //console.log(match);
+  console.log(match);
   if (match === null) return undefined
   return match[1];
 }
