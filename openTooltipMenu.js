@@ -8,12 +8,12 @@ function createTooltipMenu(selection) {
 	var ele = document.createElement("div");
       var r = selection.getRangeAt(0).getBoundingClientRect(); //get the text range
       var relative=document.body.parentNode.getBoundingClientRect();
-      ele.setAttribute('style',
-              'background-color: lightGray; '
-           // + 'width: 100px; '
-           // + 'height: 30px; '
-            + 'position: absolute; '
-            );
+      // ele.setAttribute('style',
+      //         'background-color: Silver; '
+      //       + 'position: absolute; '
+      //       );
+      ele.style.position = 'absolute';
+      ele.style.backgroundColor= '#f8eded';
       ele.style.top =(r.bottom -relative.top)+"px";//this will place ele below the selection
       ele.style.right=-(r.right-relative.right)+"px"; //this will align the right edges together
       ele.setAttribute("id","tooltipMenu");
