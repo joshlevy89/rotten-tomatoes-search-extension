@@ -1,3 +1,5 @@
+const base_url = 'https://www.rottentomatoes.com';
+
 function getHighlightedObject(callback) {
       var selection = window.getSelection();
       // invoke the callback
@@ -144,12 +146,12 @@ function renderTooltipMenuLink(movieUrl,dispTitle) {
 function makeSearchString(highlightedText) {
   // replace spaces with underscores in url
   var query = highlightedText.split(' ').join('+');
-  return 'https://www.rottentomatoes.com/search/?search=' + query;
+  return base_url + '/search/?search=' + query;
   //return 'http://www.rottentomatoes.com/search/?search=12+angry+men';
 }
 
 function makeResultString(ext) {
-  return 'https://www.rottentomatoes.com' + ext;
+  return base_url + ext;
 }
 
 
