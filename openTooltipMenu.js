@@ -152,7 +152,6 @@ function makeResultString(ext) {
   return 'https://www.rottentomatoes.com' + ext;
 }
 
-
 // destroy any existing tooltipMenuDivs
 $('body').on('mousedown', function(event) {
   // check if event originated from outside tooltipMenu
@@ -180,4 +179,8 @@ $('body').on('mouseup', function(event) {
   });
   }
 });
+
+console.log('hello');
+
+
 
