@@ -182,3 +182,6 @@ $('body').on('mouseup', function(event) {
   });
   }
 });
+
+console.log('hello');
+
