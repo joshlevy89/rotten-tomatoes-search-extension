@@ -1,9 +1,57 @@
 function getHighlightedText(callback) {
-  chrome.tabs.executeScript( {
-    code: "window.getSelection().toString();"
+  // chrome.tabs.executeScript({
+  //   code: "window.getSelection().toString()"
+  // }, function(selection) {
+  //   callback(selection.toString());
+  // });
+
+    // var code = [
+    //        'var selection = window.getSelection();',
+    //         'oRange = selection.getRangeAt(0);', //get the text range
+    //         'oRect = oRange.getBoundingClientRect();',
+    //         //'alert(oRect.left);',
+    //         'var d = document.createElement("div");',
+    //         'd.setAttribute("style", "'
+    //             + 'background-color: orange; '
+    //             + 'width: 100px; '
+    //             + 'height: 100px; '
+    //             + 'position: fixed; '
+    //             + 'top: 150px; '
+    //             + 'left: 30px; '
+    //             + 'z-index: 9999; '
+    //             + '");',
+    //         'document.body.appendChild(d);',
+    //         'selection.toString()'
+    //         //'selection.toString()'
+    // ].join("\n");
+
+    var code = [
+      'var selection = window.getSelection();',
+      'var ele = document.createElement("div");',
+      'var r = selection.getRangeAt(0).getBoundingClientRect();', //get the text range
+      'var relative=document.body.parentNode.getBoundingClientRect();',
+      'ele.setAttribute("style", "'
+            + 'background-color: orange; '
+            + 'width: 100px; '
+            + 'height: 100px; '
+            + 'position: absolute; '
+            + '");',
+      'ele.style.top =(r.bottom -relative.top)+"px";',//this will place ele below the selection
+      'ele.style.right=-(r.right-relative.right)+"px";',//this will align the right edges together
+      'ele.setAttribute("id","tooltipMenu");',
+      //'var menuText = document.createTextNode("HELLO"); ',
+      //'ele.appendChild(menuText);',
+      'document.body.appendChild(ele);',
+      'selection.toString()'
+    ].join("\n");
+
+  //console.log(code);
+  chrome.tabs.executeScript({
+    code: code
   }, function(selection) {
-    callback(selection.toString());
+    callback(selection[0]);
   });
+
 }
 
  function getSource(theUrl,callback,errorCallback)
@@ -59,6 +107,18 @@ function renderStatus(statusText) {
   document.getElementById('status').textContent = statusText;
 }
 
+function renderTooltipMenu(rating) {
+    var code = [
+    'var rating = ' + rating + ';',
+    'var tooltipMenuDiv = document.getElementById("tooltipMenu");',
+    'var menuText = document.createTextNode(rating); ',
+    'tooltipMenuDiv.appendChild(menuText);',
+    'document.body.appendChild(tooltipMenuDiv);'
+    ].join("\n");
+
+  chrome.tabs.executeScript({code: code});
+}
+
 function makeSearchString(highlightedText) {
   // replace spaces with underscores in url
   var query = highlightedText.split(' ').join('+');
@@ -75,6 +135,7 @@ document.addEventListener('DOMContentLoaded', function() {
    }
    renderStatus('Searching for: ' + highlightedText + '...');
    getSource(makeSearchString(highlightedText), function(rating) {
+      renderTooltipMenu(rating);
       renderStatus('Rating: ' + rating);
    }, function(errorMessage) {
      renderStatus('Cannot find rating: ' + errorMessage);
