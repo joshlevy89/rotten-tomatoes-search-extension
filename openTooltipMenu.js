@@ -180,4 +180,3 @@ $('body').on('mouseup', function(event) {
   });
   }
 });
-
