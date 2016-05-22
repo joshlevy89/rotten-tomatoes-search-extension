@@ -1,10 +1,5 @@
 // destroy any existing tooltipMenuDivs
-$('body').on('mousedown', function(event) {
-  console.log('mouse down')
-});
+$('body').off();
 
-$('body').on('mouseup', function(event) {
-  console.log('mouse up');
-});
 
-console.log('hello');
+console.log('off');
