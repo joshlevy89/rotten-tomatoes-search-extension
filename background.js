@@ -1,5 +1,4 @@
 var toggle = false;
-console.log('hello');
 chrome.browserAction.onClicked.addListener(function(tab) {
   toggle = !toggle;
   console.log(toggle);
@@ -9,6 +8,6 @@ chrome.browserAction.onClicked.addListener(function(tab) {
   }
   else{
     //chrome.browserAction.setIcon({path: "off.png", tabId:tab.id});
-    chrome.tabs.executeScript(tab.id, {file:"temp.js"});
+    chrome.tabs.executeScript(tab.id, {code: "$('body').off();"});
   }
 });
