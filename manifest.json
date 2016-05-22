@@ -18,8 +18,10 @@
     "scripts": ["background.js"],
     "persistent": true
   },
+  // by default, content scripts running; however, event listeners in 
+  // openTooltipMenu may be toggled off by the background script
   "content_scripts": [{
-     "js": ["jquery-1.12.3.min.js"],
+     "js": ["jquery-1.12.3.min.js","openTooltipMenu.js"], 
      "matches": ["<all_urls>"]
    }]
 }

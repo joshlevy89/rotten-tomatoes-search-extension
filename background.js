@@ -1,6 +1,7 @@
 // turn content script on by default
 var toggle = true;
 chrome.tabs.executeScript(null, {file:"openTooltipMenu.js"}); 
+console.log('hello');
 
 // toggle event listener each time extension icon clicked
 chrome.browserAction.onClicked.addListener(function(tab) {
