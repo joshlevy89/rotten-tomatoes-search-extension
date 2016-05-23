@@ -1,8 +1,7 @@
-//SET VARIABLE
-var isExtensionOn = false;
-
 document.addEventListener('DOMContentLoaded', function() {
-	document.getElementById('toggle').addEventListener('click', function() {
+	$('#toggle').text('disable');
+	var toggle = document.getElementById('toggle')
+	toggle.addEventListener('click', function() {
 		//chrome.tabs.executeScript({code: "console.log('toggled...')"});
 		chrome.extension.sendMessage({ cmd: "getOnOffState" }, function(currentState){
 			var newState = !currentState;
@@ -12,10 +11,12 @@ document.addEventListener('DOMContentLoaded', function() {
 				if (newState) {
 					chrome.browserAction.setIcon({path: "./icons/icon_on.png"});
 					chrome.tabs.executeScript({file:"openTooltipMenu.js"});
+					$('#toggle').text('disable');
 				}
 				else {
 					chrome.browserAction.setIcon({path: "./icons/icon_off.png"});
 					chrome.tabs.executeScript({code: "$('body').off();"});
+					$('#toggle').text('enable');
 				}	
 			});
 		});
