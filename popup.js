@@ -1,5 +1,10 @@
 document.addEventListener('DOMContentLoaded', function() {
-	$('#toggle').text('disable');
+	// show different text depending on on/off state (for icon, handled by having default icon)
+	 chrome.extension.sendMessage({ cmd: "getOnOffState" }, function(currentState){
+	 	if (currentState) $('#toggle').text('disable');
+	 	else $('#toggle').text('enable');
+	 });
+	// allow user to toggle state of extension
 	var toggle = document.getElementById('toggle')
 	toggle.addEventListener('click', function() {
 		//chrome.tabs.executeScript({code: "console.log('toggled...')"});

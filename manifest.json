@@ -1,10 +1,8 @@
 {
   "manifest_version": 2,
-
   "name": "Rotten Tomatoes Search",
   "description": "This extension searches rotten tomatoes with highlighted text",
   "version": "1.0",
-
   "browser_action": {
     "default_icon": "./icons/icon_on.png",
     "default_popup": "popup.html"
@@ -18,8 +16,6 @@
     "scripts": ["background.js"],
     "persistent": true
   },
-  // by default, content scripts running; however, event listeners in 
-  // openTooltipMenu may be toggled off by the background script
   "content_scripts": [{
      "js": ["jquery-1.12.3.min.js","openTooltipMenu.js"], 
      "matches": ["<all_urls>"]
