@@ -7,12 +7,15 @@
         font-family: "Segoe UI", "Lucida Grande", Tahoma, sans-serif;
         font-size: 100%;
       }
-      #status {
-        /* avoid an excessively wide status text */
-        white-space: pre;
-        text-overflow: ellipsis;
-        overflow: hidden;
-        width: 400px;
+      .popupMenu {
+        width: 300px;
+      }
+      .header {
+        text-align: center;
+      }
+      .menuEntry {
+        margin: 10px;
+        cursor: pointer;
       }
     </style>
 
@@ -26,7 +29,10 @@
     <script src="./popup.js"></script><style type="text/css"></style>
   </head>
   <body>
-    <div id="status"></div>
-    <img id="image-result" hidden="">
+    <div class="popupMenu" style="list-style-type:none">
+      <div class="header">Rotten Tomatoes Search</div>
+      <hr>
+      <div class="menuEntry" id="toggle"></div>
+    </div>
   </body>
 </html>
