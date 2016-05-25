@@ -1,4 +1,5 @@
-const base_url = 'https://www.rottentomatoes.com';
+function turnTooltipOn() {
+var base_url = 'https://www.rottentomatoes.com';
 
 function getHighlightedObject(callback) {
       var selection = window.getSelection();
@@ -182,3 +183,14 @@ $('body').on('mouseup', function(event) {
   });
   }
 });
+}
+
+function turnTooltipOff() {
+  $('body').off();
+}
+
+chrome.extension.sendMessage({ cmd: "getOnOffState" }, function(currentState){
+  if (currentState) turnTooltipOn();
+  else turnTooltipOff();
+});
+
