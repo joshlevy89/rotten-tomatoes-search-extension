@@ -1,6 +1,0 @@
-Created the following files:
-
-Extension: /Users/joshlevy89/Desktop/code/rotten-tomatoes-search-extension.crx
-Key File: /Users/joshlevy89/Desktop/code/rotten-tomatoes-search-extension.pem
-
-Keep your key file in a safe place. You will need it to create new versions of your extension.

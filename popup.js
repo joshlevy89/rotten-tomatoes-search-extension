@@ -13,19 +13,37 @@ document.addEventListener('DOMContentLoaded', function() {
 			// toggle to the new state in background
 			chrome.extension.sendMessage({ cmd: "setOnOffState", data: { value: newState } }, function(){
 				// after toggling, do stuff based on new state
-				if (newState) {
-					chrome.browserAction.setIcon({path: "./icons/icon_on.png"});
-					chrome.tabs.executeScript({file:"openTooltipMenu.js"});
-					$('#toggle').text('disable');
-				}
-				else {
-					chrome.browserAction.setIcon({path: "./icons/icon_off.png"});
-					chrome.tabs.executeScript({code: "$('body').off();"});
-					$('#toggle').text('enable');
-				}	
+				if (newState) turnOn();
+				else turnOff();
+				// run the content script in all tabs
+				executeScriptsInExistingTabs();
 			});
 		});
 	})
 });
+
+function turnOn() {
+	chrome.browserAction.setIcon({path: "./icons/icon_on.png"});
+	$('#toggle').text('disable');
+}
+
+function turnOff() {
+	chrome.browserAction.setIcon({path: "./icons/icon_off.png"});
+	$('#toggle').text('enable');
+}
+
+function executeScriptsInExistingTabs(){
+    chrome.windows.getAll(null, function(wins) {
+      for (var j = 0; j < wins.length; ++j) {
+        chrome.tabs.getAllInWindow(wins[j].id, function(tabs) {
+          for (var i = 0; i < tabs.length; ++i) {
+            if (tabs[i].url.indexOf("chrome://") != 0) {
+              chrome.tabs.executeScript(tabs[i].id, { file: 'content_scripts.js' });
+            }
+          }
+        });
+      }
+    });
+}
 
 	

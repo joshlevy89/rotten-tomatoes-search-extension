@@ -1,3 +1,4 @@
+function turnTooltipOn() {
 var base_url = 'https://www.rottentomatoes.com';
 
 function getHighlightedObject(callback) {
@@ -181,5 +182,15 @@ $('body').on('mouseup', function(event) {
    });
   });
   }
+});
+}
+
+function turnTooltipOff() {
+  $('body').off();
+}
+
+chrome.extension.sendMessage({ cmd: "getOnOffState" }, function(currentState){
+  if (currentState) turnTooltipOn();
+  else turnTooltipOff();
 });
 
