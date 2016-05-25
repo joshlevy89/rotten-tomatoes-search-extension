@@ -23,12 +23,12 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function turnOn() {
-	chrome.browserAction.setIcon({path: "./icons/icon_on.png"});
+	chrome.browserAction.setIcon({path: "../icons/icon_on.png"});
 	$('#toggle').text('disable');
 }
 
 function turnOff() {
-	chrome.browserAction.setIcon({path: "./icons/icon_off.png"});
+	chrome.browserAction.setIcon({path: "../icons/icon_off.png"});
 	$('#toggle').text('enable');
 }
 
@@ -38,7 +38,7 @@ function executeScriptsInExistingTabs(){
         chrome.tabs.getAllInWindow(wins[j].id, function(tabs) {
           for (var i = 0; i < tabs.length; ++i) {
             if (tabs[i].url.indexOf("chrome://") != 0) {
-              chrome.tabs.executeScript(tabs[i].id, { file: 'content_scripts.js' });
+              chrome.tabs.executeScript(tabs[i].id, { file: './content_scripts/content_scripts.js' });
             }
           }
         });
