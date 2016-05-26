@@ -155,14 +155,19 @@ function renderTooltipMenuLink(movieUrl,dispTitle) {
 function renderTooltipSaveButton(dispTitle, rating, movieUrl) {
   $('#tooltipMenu').append('<div><button id="tooltipSaveButton">Save</button></div>');
   $('#tooltipSaveButton').on('click', function(event) {
+        //chrome.storage.sync.set({'savedMovies': {}}, function() {
         // get any saved results in local storage
         chrome.storage.sync.get("savedMovies", function(obj) {
-        if (Object.keys(obj).length === 0) var savedMoviesArray = [];
-        else var savedMoviesArray = obj["savedMovies"];
-        // add the new entry
-        savedMoviesArray.push({'dispTitle':dispTitle,'rating':rating,'movieUrl':movieUrl});
-        chrome.storage.sync.set({"savedMovies":savedMoviesArray});
-      })
+        if (Object.keys(obj).length === 0) var savedMoviesObj = {};
+        else var savedMoviesObj = obj["savedMovies"];
+        var id =  dispTitle.replace(/["'()]/g,"").replace(/ /g,''); // removes parens and whitespace
+        console.log(id);
+        if (!(id in savedMoviesObj)) { // only assign new if not already a key
+        savedMoviesObj[id] = {'dispTitle': dispTitle, 'rating':rating,'movieUrl':movieUrl,'watched':false};
+        chrome.storage.sync.set({"savedMovies":savedMoviesObj});
+        }
+        })
+      //})
   });
 }
 
