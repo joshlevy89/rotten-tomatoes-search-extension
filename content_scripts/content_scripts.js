@@ -16,8 +16,6 @@ function createTooltipMenu(selection) {
   ele.style.top = '25px';
   ele.style.right = '25px';
   ele.style.zIndex = '9999';
-  //ele.style.width = '100px';
-  //ele.style.height = '100px';
   ele.style.border = 'solid';
   //ele.style.top =(r.bottom -relative.top)+"px";//this will place ele below the selection
   //ele.style.right=-(r.right-relative.right)+"px"; //this will align the right edges together
@@ -140,7 +138,7 @@ function renderTooltipMenuRatingText(str) {
     if (str.length<=2) {
       str = 'Rating: ' + str + '%';
     }
-    $('#tooltipMenu').append('<div>' + str + '</div>');
+    $('#tooltipMenu').append('<div id="tooltipRating">' + str + '</div>');
     $('#tooltipMenu').css('padding','15px');
     $('#tooltipMenu').css('text-align','center');
 }
@@ -149,10 +147,23 @@ function renderTooltipMenuLink(movieUrl,dispTitle) {
     if (movieUrl === undefined) return
     var str = dispTitle;
     if (str === undefined) str = 'Link';// if cannot find title, render 'Link'
-    $('#tooltipMenu').append('<a href=' + movieUrl + ' target=_blank>' + str + '</a>');
+    $('#tooltipMenu').append('<a id="tooltipLink" href=' + movieUrl + ' target=_blank>' + str + '</a>');
     $('#tooltipMenu').css('text-align','center');
-        $('#tooltipMenu').css('padding','15px');
+    $('#tooltipMenu').css('padding','15px');
+}
 
+function renderTooltipSaveButton(dispTitle, rating, movieUrl) {
+  $('#tooltipMenu').append('<div><button id="tooltipSaveButton">Save</button></div>');
+  $('#tooltipSaveButton').on('click', function(event) {
+        // get any saved results in local storage
+        chrome.storage.sync.get("savedMovies", function(obj) {
+        if (Object.keys(obj).length === 0) var savedMoviesArray = [];
+        else var savedMoviesArray = obj["savedMovies"];
+        // add the new entry
+        savedMoviesArray.push({'dispTitle':dispTitle,'rating':rating,'movieUrl':movieUrl});
+        chrome.storage.sync.set({"savedMovies":savedMoviesArray});
+      })
+  });
 }
 
 function makeSearchString(highlightedText) {
@@ -185,9 +196,10 @@ $('body').on('mouseup', function(event) {
    }
    createTooltipMenu(selection);
    renderTooltipMenuSearchText('Searching for ' + highlightedText.substring(0,12)+'...');
-   getSource(makeSearchString(highlightedText), function(rating,movieUrl,dispTitle,dispImage) {
-      renderTooltipMenuRatingText(rating);
-      renderTooltipMenuLink(movieUrl,dispTitle);
+   getSource(makeSearchString(highlightedText), function(rating,movieUrl,dispTitle) {
+   renderTooltipMenuRatingText(rating);
+   renderTooltipMenuLink(movieUrl,dispTitle);
+   renderTooltipSaveButton(dispTitle, rating, movieUrl);
    }, function(errorMessage) {
      renderTooltipMenuText('Cannot find rating: ' + errorMessage);
    });
