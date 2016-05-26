@@ -2,21 +2,27 @@ function turnTooltipOn() {
 var base_url = 'https://www.rottentomatoes.com';
 
 function getHighlightedObject(callback) {
-      var selection = window.getSelection();
-      // invoke the callback
-      callback(selection);
+  var selection = window.getSelection();
+  // invoke the callback
+  callback(selection);
 }
 
 function createTooltipMenu(selection) {
-	var ele = document.createElement("div");
-      var r = selection.getRangeAt(0).getBoundingClientRect(); //get the text range
-      var relative=document.body.parentNode.getBoundingClientRect();
-      ele.style.position = 'absolute';
-      ele.style.backgroundColor= '#f8eded';
-      ele.style.top =(r.bottom -relative.top)+"px";//this will place ele below the selection
-      ele.style.right=-(r.right-relative.right)+"px"; //this will align the right edges together
-      ele.setAttribute("id","tooltipMenu");
-      document.body.appendChild(ele);
+  var ele = document.createElement("div");
+  var r = selection.getRangeAt(0).getBoundingClientRect(); //get the text range
+  var relative=document.body.parentNode.getBoundingClientRect();
+  ele.style.position = 'fixed';
+  ele.style.backgroundColor= '#f8eded';
+  ele.style.top = '25px';
+  ele.style.right = '25px';
+  ele.style.zIndex = '9999';
+  ele.style.width = '200px';
+  ele.style.height = '200px';
+  ele.style.border = 'solid';
+  //ele.style.top =(r.bottom -relative.top)+"px";//this will place ele below the selection
+  //ele.style.right=-(r.right-relative.right)+"px"; //this will align the right edges together
+  ele.setAttribute("id","tooltipMenu");
+  document.body.appendChild(ele);
 }
 
  function getSource(theUrl,callback,errorCallback)
@@ -174,7 +180,7 @@ $('body').on('mouseup', function(event) {
    }
    createTooltipMenu(selection);
    renderTooltipMenuSearchText('Searching for ' + highlightedText.substring(0,12)+'...');
-   getSource(makeSearchString(highlightedText), function(rating,movieUrl,dispTitle) {
+   getSource(makeSearchString(highlightedText), function(rating,movieUrl,dispTitle,dispImage) {
       renderTooltipMenuRatingText(rating);
       renderTooltipMenuLink(movieUrl,dispTitle);
    }, function(errorMessage) {
