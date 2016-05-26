@@ -1,5 +1,5 @@
 {
-  "manifest_version": 201,
+  "manifest_version": 2,
   "name": "WhatToWatch",
   "description": "This extension searches rotten tomatoes with highlighted text",
   "version": "2.0",
