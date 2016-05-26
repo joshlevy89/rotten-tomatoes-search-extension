@@ -16,8 +16,8 @@ function createTooltipMenu(selection) {
   ele.style.top = '25px';
   ele.style.right = '25px';
   ele.style.zIndex = '9999';
-  ele.style.width = '200px';
-  ele.style.height = '200px';
+  //ele.style.width = '100px';
+  //ele.style.height = '100px';
   ele.style.border = 'solid';
   //ele.style.top =(r.bottom -relative.top)+"px";//this will place ele below the selection
   //ele.style.right=-(r.right-relative.right)+"px"; //this will align the right edges together
@@ -131,7 +131,8 @@ function getMatchToRegExp(text,type,optionalRe) {
 
 function renderTooltipMenuSearchText(str) {
     $('#tooltipMenu').append('<div>' + str + '</div>');
-    $('#tooltipMenu').css('padding','5px');
+    $('#tooltipMenu').css('padding','15px');
+    $('#tooltipMenu').css('text-align','center');
 }
 
 function renderTooltipMenuRatingText(str) {
@@ -140,7 +141,8 @@ function renderTooltipMenuRatingText(str) {
       str = 'Rating: ' + str + '%';
     }
     $('#tooltipMenu').append('<div>' + str + '</div>');
-    $('#tooltipMenu').css('padding','5px');
+    $('#tooltipMenu').css('padding','15px');
+    $('#tooltipMenu').css('text-align','center');
 }
 
 function renderTooltipMenuLink(movieUrl,dispTitle) {
@@ -148,6 +150,9 @@ function renderTooltipMenuLink(movieUrl,dispTitle) {
     var str = dispTitle;
     if (str === undefined) str = 'Link';// if cannot find title, render 'Link'
     $('#tooltipMenu').append('<a href=' + movieUrl + ' target=_blank>' + str + '</a>');
+    $('#tooltipMenu').css('text-align','center');
+        $('#tooltipMenu').css('padding','15px');
+
 }
 
 function makeSearchString(highlightedText) {
