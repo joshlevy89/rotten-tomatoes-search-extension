@@ -21,6 +21,8 @@ function createTooltipMenu(selection) {
   //ele.style.right=-(r.right-relative.right)+"px"; //this will align the right edges together
   ele.setAttribute("id","tooltipMenu");
   document.body.appendChild(ele);
+  $('#tooltipMenu').append('<h3 id="tooltipHeading">WhatToWatch</h3>')
+  $('#tooltipHeading').css('text-decoration','underline')
 }
 
  function getSource(theUrl,callback,errorCallback)
@@ -31,6 +33,7 @@ function createTooltipMenu(selection) {
     url: theUrl,
     type: 'GET',
     success: function(res) {
+        console.log('returned');
         var text = res.toString();
         // check whether the page is a search results page (or movie page)
         var searchPage = getMatchToRegExp(text,'SEARCH_PAGE','');
@@ -128,13 +131,13 @@ function getMatchToRegExp(text,type,optionalRe) {
 }
 
 function renderTooltipMenuSearchText(str) {
-    $('#tooltipMenu').append('<div>' + str + '</div>');
+    $('#tooltipMenu').append('<div id="searchText">' + str + '</div>');
     $('#tooltipMenu').css('padding','15px');
     $('#tooltipMenu').css('text-align','center');
 }
 
 function renderTooltipMenuRatingText(str) {
-    $("#tooltipMenu").empty(); // removes any previous divs 
+    $("#searchText").empty(); // removes any previous divs 
     if (str.length<=2) {
       str = 'Rating: ' + str + '%';
     }
