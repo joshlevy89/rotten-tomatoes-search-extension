@@ -112,7 +112,7 @@ function getMatchToRegExp(text,type,optionalRe) {
       re = /<span class="tMeterScore">(\d*)/g;
       break;
     case 'MOVIE_URL_RESULT_PAGE':
-      re = /<link href="(http:\/\/www.*)" rel="canonical"/;
+      re = /<link href="(.*)" rel="canonical"/;
       break;
     case 'MOVIE_URL_SEARCH_PAGE':
       re = /href="([^<]*)">[^<]*<\/a> <span class="movie_year"> \(\d*\)/;
