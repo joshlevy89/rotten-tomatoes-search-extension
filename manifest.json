@@ -1,6 +1,6 @@
 {
   "manifest_version": 2,
-  "name": "Rotten Tomatoes Search",
+  "name": "WhatToWatch",
   "description": "This extension searches rotten tomatoes with highlighted text",
   "version": "2.0",
   "browser_action": {
