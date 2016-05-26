@@ -21,8 +21,11 @@ function createTooltipMenu(selection) {
   //ele.style.right=-(r.right-relative.right)+"px"; //this will align the right edges together
   ele.setAttribute("id","tooltipMenu");
   document.body.appendChild(ele);
-  $('#tooltipMenu').append('<h3 id="tooltipHeading">WhatToWatch</h3>')
-  $('#tooltipHeading').css('text-decoration','underline')
+  $('#tooltipMenu').append('<div id="tooltipHeading">WhatToWatch</div>');
+  $('#tooltipHeading').css('text-decoration','underline');
+  $('#tooltipHeading').css('margin-top','5px');
+  $('#tooltipMenu').css('padding','10px');
+  $('#tooltipMenu').css('text-align','center');
 }
 
  function getSource(theUrl,callback,errorCallback)
@@ -135,18 +138,17 @@ function getMatchToRegExp(text,type,optionalRe) {
 
 function renderTooltipMenuSearchText(str) {
     $('#tooltipMenu').append('<div id="searchText">' + str + '</div>');
-    $('#tooltipMenu').css('padding','15px');
-    $('#tooltipMenu').css('text-align','center');
+    $('#searchText').css('margin-top','10px');
 }
 
 function renderTooltipMenuRatingText(str) {
     $("#searchText").empty(); // removes any previous divs 
     if (str.length<=2) {
-      str = 'Rating: ' + str + '%';
+      str = str + '%';
     }
     $('#tooltipMenu').append('<div id="tooltipRating">' + str + '</div>');
-    $('#tooltipMenu').css('padding','15px');
-    $('#tooltipMenu').css('text-align','center');
+    $('#tooltipRating').css('margin-top','10px');
+    $('#tooltipRating').css('font-size','20px');
 }
 
 function renderTooltipMenuLink(movieUrl,dispTitle) {
@@ -154,8 +156,7 @@ function renderTooltipMenuLink(movieUrl,dispTitle) {
     var str = dispTitle;
     if (str === undefined) str = 'Link';// if cannot find title, render 'Link'
     $('#tooltipMenu').append('<a id="tooltipLink" href=' + movieUrl + ' target=_blank>' + str + '</a>');
-    $('#tooltipMenu').css('text-align','center');
-    $('#tooltipMenu').css('padding','15px');
+    $('#tooltipLink').css('margin-top','5px');
 }
 
 function renderTooltipSaveButton(dispTitle, rating, movieUrl) {
@@ -175,6 +176,7 @@ function renderTooltipSaveButton(dispTitle, rating, movieUrl) {
         })
       //})
   });
+  $('#tooltipSaveButton').css('margin-top','5px');
 }
 
 function makeSearchString(highlightedText) {
