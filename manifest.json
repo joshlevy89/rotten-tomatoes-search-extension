@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "WhatToWatch",
   "description": "This extension searches rotten tomatoes with highlighted text",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "browser_action": {
     "default_icon": "./icons/icon_on.png",
     "default_popup": "./popup/popup.html"
