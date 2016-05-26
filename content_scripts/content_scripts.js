@@ -32,9 +32,12 @@ function createTooltipMenu(selection) {
   $.ajax({
     url: theUrl,
     type: 'GET',
+    dataType: "text",
     success: function(res) {
         console.log('returned');
-        var text = res.toString();
+
+        var text = res;//.toString();
+        //console.log(typeof res);
         // check whether the page is a search results page (or movie page)
         var searchPage = getMatchToRegExp(text,'SEARCH_PAGE','');
         // if is a search result page...
