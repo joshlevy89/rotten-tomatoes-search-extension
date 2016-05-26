@@ -20,6 +20,13 @@ document.addEventListener('DOMContentLoaded', function() {
 			});
 		});
 	})
+	// add event listener to view saved movies
+	var savedMovies = document.getElementById('savedMovies')
+	savedMovies.addEventListener('click', function() {
+		chrome.tabs.create({'url': chrome.extension.getURL('./user_data/user_data.html')}, function(tab) {
+  			// Tab opened.
+		});
+	})
 });
 
 function turnOn() {
